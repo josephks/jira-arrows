@@ -11,6 +11,12 @@ module JiraArrows
       }.freeze
     end
 
+    def nodes_with_no_parents
+      #This could be done in one pass
+      all_froms = @raw_data.each_with_object(Set.new) { |(from, to), acc| acc << from }.to_a
+      all_froms - @raw_data.each_with_object(Set.new) { |(from, to), acc| acc << to }.to_a
+    end
+
     def all_nodes_clustered
       clusters = []
       all_node_names = @all_nodenames.to_a

@@ -11,7 +11,8 @@
         #main
         - all_nodes_clustered.each_with_index do |cluster, cluster_idx|
           - cluster.each_with_index do |model_name, idx|
-            .model.component.window{id: model_name, style: "top: #{ (5*cluster_idx) + 5 * (idx / 7)}em; left: #{20 * (idx % 7)}em"}
+            - classname = 'noparent' if nodes_with_no_parents.include?(model_name)
+            .model.component.window{id: model_name, style: "top: #{ (5*cluster_idx) + 5 * (idx / 7)}em; left: #{20 * (idx % 7)}em", class: classname}
               %a{href: "https://medidata.atlassian.net/browse/#{model_name}"}= model_name
 
     %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'}

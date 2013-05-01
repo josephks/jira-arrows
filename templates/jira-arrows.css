@@ -9,8 +9,7 @@
 
 }
 
-.in_sd_clone { background-color: pink;}
-.has_model_in_clone {background-color: #add8e6; }
+.noparent { background-color: lime;}
 
 .window {
     border:2px solid #346789;
