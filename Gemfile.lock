@@ -1,0 +1,15 @@
+PATH
+  remote: .
+  specs:
+    jira-arrows (0.0.1)
+      haml
+
+GEM
+  specs:
+    haml (3.1.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  jira-arrows!

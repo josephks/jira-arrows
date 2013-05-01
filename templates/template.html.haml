@@ -1,0 +1,68 @@
+%html
+  %head
+    %title
+      JIRA dependency graph
+    %style{ type: 'text/css' }= File.read( File.expand_path('templates/jira-arrows.css', File.dirname(__FILE__)) )
+
+  %body{ 'data-demo-id' => "demo", 'data-library' => "jquery"}
+
+    %div{style:"position:absolute"}
+      #model_map
+        #main
+        - all_nodes_clustered.each_with_index do |cluster, cluster_idx|
+          - cluster.each_with_index do |model_name, idx|
+            .model.component.window{id: model_name, style: "top: #{ (5*cluster_idx) + 5 * (idx / 7)}em; left: #{20 * (idx % 7)}em"}
+              %a{href: "https://medidata.atlassian.net/browse/#{model_name}"}= model_name
+
+    %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'}
+    %script{src: 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'}
+    %script{src: 'http://jsplumbtoolkit.com/js/jquery.jsPlumb-1.3.16-all-min.js'}
+
+    :javascript
+
+
+
+      ;(function() {
+
+      	window.jsPlumbDemo = {
+
+      		init : function() {
+
+      			jsPlumb.importDefaults({
+      				DragOptions : { cursor: "pointer", zIndex:2000 },
+      				HoverClass:"connector-hover"
+      			});
+
+      			var connectorStrokeColor = "rgba(50, 50, 200, 1)",
+      				connectorHighlightStrokeColor = "rgba(180, 180, 200, 1)",
+      				hoverPaintStyle = { strokeStyle:"#7ec3d9" };			// hover paint style is merged on normal style, so you
+      			                                                        // don't necessarily need to specify a lineWidth
+
+
+      	        var stateMachineConnector = {
+      				connector:"StateMachine",
+      				paintStyle:{lineWidth:3,strokeStyle:"#056"},
+      				hoverPaintStyle:{strokeStyle:"#dbe300"},
+      				endpoint:"Blank",
+      				anchor:"Continuous",
+      				overlays:[ ["PlainArrow", {location:1, width:20, length:12} ]]
+      			};
+
+      			jQuery.each( #{ all_connections }, function(i, connection){
+      			    console.log(i + ") processing " + connection [0] + ' -> ' + connection[1]);
+      			    jsPlumb.connect({ source: connection[0], target: connection[1]}, stateMachineConnector);
+      			})
+      			 // jsPlumb.connect({ source: "DosingFactorLevel", target: "DosingFactor"}, stateMachineConnector);
+
+                jsPlumb.draggable(jsPlumb.getSelector(".window"), { containment:".model_map"});
+      		}
+      	}
+      	  jsPlumb.reset();
+      	  jsPlumb.setRenderMode(jsPlumb.SVG);
+          jsPlumbDemo.init()
+      })()
+
+
+
+
+
