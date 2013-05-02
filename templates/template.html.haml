@@ -2,6 +2,7 @@
   %head
     %title
       JIRA dependency graph
+      %meta{name: :description, content: "Built at #{ Time.now } by jira-arrows version #{ version } "}
     %style{ type: 'text/css' }= File.read( File.expand_path('templates/jira-arrows.css', File.dirname(__FILE__)) )
 
   %body{ 'data-demo-id' => "demo", 'data-library' => "jquery"}

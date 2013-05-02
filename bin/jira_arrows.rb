@@ -23,7 +23,9 @@ graph = JiraArrows::Graph.new(raw_data)
 require 'haml'
 renderer = Haml::Engine.new(File.read( File.expand_path('../templates/template.html.haml', File.dirname(__FILE__)) ))
 
-html_output = renderer.to_html(nil, { all_connections: raw_data, graph: graph} )
+version = Gem::Specification::load(File.expand_path('../jira-arrows.gemspec', File.dirname(__FILE__))).version
+
+html_output = renderer.to_html(nil, { all_connections: raw_data, graph: graph, version: version} )
 temp_file = File.new(outputfilename, "w+")
 temp_file.puts(html_output)
 temp_file.close
