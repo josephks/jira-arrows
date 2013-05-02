@@ -9,11 +9,15 @@
     %div{style:"position:absolute"}
       #model_map
         #main
-        - all_nodes_clustered.each_with_index do |cluster, cluster_idx|
-          - cluster.each_with_index do |mcc_name, idx|
-            - classname = 'noparent' if nodes_with_no_parents.include?(mcc_name)
-            .model.component.window{id: mcc_name, style: "top: #{ (5*cluster_idx) + 5 * (idx / 7)}em; left: #{20 * (idx % 7)}em", class: classname}
-              %a{href: "https://medidata.atlassian.net/browse/#{mcc_name}"}= mcc_name
+        - top_start = -7
+        - graph.all_nodes_clustered(true).each_with_index do |cluster, cluster_idx|
+          - top_start += 8
+          - cluster.each_with_index do |tier, tier_idx|
+            - tier.each_with_index do |mcc_name, idx|
+              - classname = 'noparent' if mcc_name.is_orphan? #graph.nodes_with_no_parents.include?(mcc_name)
+              .model.component.window{id: mcc_name, style: "top: #{ top_start + 5 * (idx / 7)}em; left: #{20 * (idx % 7)}em", cluster_idx: cluster_idx, tier_idx: tier_idx, idx: idx, class: classname}
+                %a{href: "https://medidata.atlassian.net/browse/#{mcc_name}"}= mcc_name
+            - top_start += 7 * ( ((tier.length - 1) / 7) + 1)
 
     %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'}
     %script{src: 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'}

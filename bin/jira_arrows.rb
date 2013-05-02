@@ -23,8 +23,7 @@ graph = JiraArrows::Graph.new(raw_data)
 require 'haml'
 renderer = Haml::Engine.new(File.read( File.expand_path('../templates/template.html.haml', File.dirname(__FILE__)) ))
 
-html_output = renderer.to_html(nil, { all_connections: raw_data, all_nodes_clustered: graph.all_nodes_clustered,
-                                      nodes_with_no_parents: graph.nodes_with_no_parents} )
+html_output = renderer.to_html(nil, { all_connections: raw_data, graph: graph} )
 temp_file = File.new(outputfilename, "w+")
 temp_file.puts(html_output)
 temp_file.close
