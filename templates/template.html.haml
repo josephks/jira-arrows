@@ -55,7 +55,17 @@
 
       			jQuery.each( #{ all_connections }, function(i, connection){
       			    console.log(i + ") processing " + connection [0] + ' -> ' + connection[1]);
-      			    jsPlumb.connect({ source: connection[0], target: connection[1]}, stateMachineConnector);
+      			    var params = { source: connection[0], target: connection[1]}
+      			    jsPlumb.connect(params, stateMachineConnector);
+      			    jQuery('#' + params.source).mouseover( function(){
+                          			         jsPlumb.select({source: params.source }).setHover(true).each( function(x){  jQuery(x.target[0]).addClass('hovertarget')  } );
+                          			         jsPlumb.select({target: params.source }).each( function(x){  jQuery(x.source[0]).addClass('hoversource')  } );
+
+                          			         });
+                    jQuery('#' + params.source).mouseout(  function(){
+                         jsPlumb.select({source: params.source }).setHover(false).each( function(x){  jQuery(x.target[0]).removeClass('hovertarget')  } );
+                         jsPlumb.select({target: params.source }).each( function(x){  jQuery(x.source[0]).removeClass('hoversource')  } );
+                          })
       			})
       			 // jsPlumb.connect({ source: "DosingFactorLevel", target: "DosingFactor"}, stateMachineConnector);
 

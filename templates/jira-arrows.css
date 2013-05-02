@@ -37,3 +37,6 @@
 ._jsPlumb_endpoint { z-index:5; }
 ._jsPlumb_overlay { z-index:6; }
 .hl { border:3px solid red; }
+
+.hovertarget { border-color: yellow;}
+.hoversource { border-color: red;}
