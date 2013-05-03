@@ -7,7 +7,7 @@ inputfilename = ARGV[0]
 outputfilename = ARGV[1]
 
 unless inputfilename
-  puts "Usage: jira-arrows.rb inputfile.csv > output.html"
+  puts "Usage: jira-arrows.rb path/to/inputfile.csv  path/to/output.html"
   exit 1
 end
 
