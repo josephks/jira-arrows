@@ -4,10 +4,11 @@ module JiraArrows
 
     class Node
       attr_reader :name
-      attr_accessor :linked_from, :links_to  #arrays of Strings
+      attr_reader :linked_from, :links_to  #arrays of Strings
 
-      def initialize(name)
+      def initialize(name, summary, color)
         @name = name
+        @attribs = {summary: summary, color: color, name: name}
         @linked_from = []
         @links_to = []
       end
@@ -25,29 +26,54 @@ module JiraArrows
       end
 
       alias to_s name
+
+      def[](key)
+        @attribs[key]
+      end
     end
 
+    attr_reader :link_data
+
     def initialize(raw_data)
-      @raw_data = raw_data
+      headers = raw_data[0]  #From,From_summary,From_Color,TO,To_summary,To_Color
+      headers.each{ |s| s.downcase! }
+      row_hashes = raw_data.each_with_object([]) do |row, acc|
+        acc << Hash[headers.zip(row)] if row != headers
+      end
+
+      @nodes = {}
+      @link_data = []
+      row_hashes.each_with_index do |row_hash, idx|
+        if  row_hash['from'] && row_hash['to']
+          ['from', 'to'].each do |from_or_to|
+            mcc_name = row_hash[from_or_to]
+            unless @nodes[mcc_name] || !mcc_name || mcc_name.strip.length == 0
+              @nodes[mcc_name] = Node.new(mcc_name, row_hash["#{ from_or_to}_summary"], row_hash["#{ from_or_to}_color"] )
+            end
+          end
+          @link_data << [ row_hash['from'], row_hash['to'] ]
+          @nodes[row_hash['from']].links_to << row_hash['to']
+          @nodes[row_hash['to']].linked_from << row_hash['from']
+        else
+          puts "bad data on line #{idx + 1}"
+        end
+      end
+
       require 'set'
-      @all_nodenames = @raw_data.each_with_object(Set.new) { |(from, to), acc|
+      @all_nodenames = @link_data.each_with_object(Set.new) { |(from, to), acc|
         acc << from
         acc << to
       }.freeze
 
-      @nodes = @all_nodenames.map{ |str| Node.new(str)}
       def @nodes.find_by_name(name)
         return name.map{ |n| self.find_by_name(n) } if name.is_a? Array
-        self.find { |n| n.name == name }
+        self[name] #.find { |n| n.name == name }
       end
 
-      @raw_data.each do |(from, to)|
-          @nodes.find_by_name(from).links_to << to
-          @nodes.find_by_name(to).linked_from << from
-      end
+      @link_data.freeze
     end
 
-    # Return an Array of clusters.  Each clusters is an array of tiers.  Each tiers is an Array of nodes.
+    # Return an Array of clusters.  Each clusters is an array of tiers.  Each tier is an Array of nodes.
     def all_nodes_clustered(tiered = false)
       clusters = []
       all_node_names = @all_nodenames.to_a
@@ -79,7 +105,7 @@ module JiraArrows
 
     # Return all nodes linked to from this node, directly or indirectly.  Used to find all nodes in a cluster
     def nodes_linked_to(node_name, exclude=[])
-      node_names = @raw_data.each_with_object([]) { |(src, target), acc|
+      node_names = @link_data.each_with_object([]) { |(src, target), acc|
         acc << target if node_name == src && !exclude.include?(target)
         acc << src if node_name == target && !exclude.include?(src)
       }.freeze

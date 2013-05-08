@@ -15,17 +15,15 @@ require 'csv'
 require File.expand_path('../lib/jira-arrows/graph', File.dirname(__FILE__))
 
 
-raw_data = CSV.read(inputfilename)
-raw_data.delete_at(0)
 
-graph = JiraArrows::Graph.new(raw_data)
+graph = JiraArrows::Graph.new(CSV.read(inputfilename))
 
 require 'haml'
 renderer = Haml::Engine.new(File.read( File.expand_path('../templates/template.html.haml', File.dirname(__FILE__)) ))
 
 version = Gem::Specification::load(File.expand_path('../jira-arrows.gemspec', File.dirname(__FILE__))).version
 
-html_output = renderer.to_html(nil, { all_connections: raw_data, graph: graph, version: version, template_dir: File.expand_path('../templates', File.dirname(__FILE__))} )
+html_output = renderer.to_html(nil, { all_connections: graph.link_data, graph: graph, version: version, template_dir: File.expand_path('../templates', File.dirname(__FILE__))} )
 temp_file = File.new(outputfilename, "w+")
 temp_file.puts(html_output)
 temp_file.close
