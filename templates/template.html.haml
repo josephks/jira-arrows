@@ -1,6 +1,7 @@
 - space_bet_rows = 6
 - num_cols = 7
 - space_bet_tiers = 3
+- space_bet_clusters = 5
 %html
   %head
     %title
@@ -16,9 +17,9 @@
     %div{style:"position:absolute"}
       #model_map
         #main
-        - top_start = -7
+        - top_start = -1 * (space_bet_clusters - 1)
         - graph.all_nodes_clustered(true).each_with_index do |cluster, cluster_idx|
-          - top_start += 8
+          - top_start += space_bet_clusters
           - cluster.each_with_index do |tier, tier_idx|
             - tier.each_with_index do |mcc_node, idx|
               - classname = 'noparent' if mcc_node.is_orphan?
