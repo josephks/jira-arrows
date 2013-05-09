@@ -12,7 +12,6 @@
 
 .window {
     border:2px solid #346789;
-    height:2em;
     z-index:20;
     position:absolute;
     font-size:0.8em;
