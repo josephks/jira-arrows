@@ -24,7 +24,7 @@
             - tier.each_with_index do |mcc_node, idx|
               - classname = 'noparent' if mcc_node.is_orphan?
               .model.component.window{id: mcc_node, title: mcc_node, style: " top: #{ top_start + space_bet_rows * (idx / num_cols)}em; left: #{20 * (idx % num_cols)}em", cluster_idx: cluster_idx, tier_idx: tier_idx, idx: idx, class: classname}
-                %a{href: "https://medidata.atlassian.net/browse/#{mcc_node}"}= mcc_node[:summary]
+                %a{href: "https://medidata.atlassian.net/browse/#{mcc_node}", target: '_blank'}= mcc_node[:summary]
             - top_start += space_bet_tiers + space_bet_rows * ( ((tier.length - 1) / num_cols) + 1)
 
     %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'}
