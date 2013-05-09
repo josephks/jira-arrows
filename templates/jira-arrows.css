@@ -9,7 +9,6 @@
 
 }
 
-.noparent { background-color: lime;}
 
 .window {
     border:2px solid #346789;
@@ -40,3 +39,4 @@
 
 .hovertarget { border-color: yellow;}
 .hoversource { border-color: red;}
+.noparent { border-color: lime;}
